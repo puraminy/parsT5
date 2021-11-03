@@ -904,7 +904,7 @@ if __name__ == "__main__":
             
 
     #with strategy.scope():
-    if True # training.resume_from_checkpoint:
+    if True: # training.resume_from_checkpoint:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
         epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
         for epoch in epochs:
