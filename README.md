@@ -55,7 +55,7 @@ cache_folder="/content/drive/MyDrive/cache"
 	--per_device_train_batch_size="32" \
 	--per_device_eval_batch_size="32" \
 	--adafactor \
-	--max_eval_steps="32000" \
+	--max_eval_steps="12000" \
 	--learning_rate="0.005" \
 	--weight_decay="0.001" \
 	--warmup_steps="2000" \
@@ -65,6 +65,10 @@ cache_folder="/content/drive/MyDrive/cache"
 #	--do_eval \
 #	--preprocessing_num_workers= "20" \
 ```
+
+If training was intruppted, it can be resumend from the last saved step. The model is saved for every 2500 steps (`--save_steps="2500"`). Also the first run needs to download datasets and do some pre-processing. This preprossing can take some hours; however the results will be saved in `cache_folder` and can be used in further calls.
+
+
 You can set `--do_eval` if you only want to evaluate a checkpoint. Also to push the model to hugging face you can use the following settings:
 ```
 	--push_to_hub="true" \
