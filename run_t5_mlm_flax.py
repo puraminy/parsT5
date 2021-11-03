@@ -863,7 +863,16 @@ if __name__ == "__main__":
 
     # Replicate the train state on each device
     state = jax_utils.replicate(state)
-
+    if training_args.push_to_hub:
+        print("%%%%%%%%%%%%%%%%%%%% Saving and Pushing to hub before training %%%")
+        save_checkpoint(
+            model,
+            training_args.output_dir,
+            state,
+            cur_step,
+            with_opt=True,
+            push_to_hub=training_args.push_to_hub
+        )
     train_time = 0
     
     if training_args.do_eval:
@@ -904,7 +913,7 @@ if __name__ == "__main__":
             
 
     #with strategy.scope():
-    if True: # training.resume_from_checkpoint:
+    if not training.do_eval:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
         epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
         for epoch in epochs:
