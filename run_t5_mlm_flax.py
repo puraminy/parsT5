@@ -869,7 +869,7 @@ if __name__ == "__main__":
             model,
             training_args.output_dir,
             state,
-            cur_step,
+            resume_step,
             with_opt=True,
             push_to_hub=training_args.push_to_hub
         )
