@@ -3,3 +3,5 @@ jax>=0.2.8
 jaxlib>=0.1.59
 flax>=0.3.4
 optax>=0.0.9
+sentencepiece
+transformers >= 4.12.3

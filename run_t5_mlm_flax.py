@@ -866,7 +866,7 @@ if __name__ == "__main__":
 
     train_time = 0
     
-    if True: #training_args.do_eval:
+    if training_args.do_eval:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Evaluation %%%%%%%%%%%%%%%%%%%%%%%%%")
         # ======================== Evaluating ==============================
         num_eval_samples = model_args.max_eval_steps if model_args.max_eval_steps else len(tokenized_datasets["validation"])
@@ -900,17 +900,13 @@ if __name__ == "__main__":
 
         # Save metrics
         if has_tensorboard and jax.process_index() == 0:
-            write_eval_metric(summary_writer, eval_metrics, cur_step)
-        if training_args.do_eval:
-            raise("Exiting training ....")
+            write_eval_metric(summary_writer, eval_metrics, resume_step)
             
 
-    
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
-
-    epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
     #with strategy.scope():
-    if True:
+    if training_args.do_train:
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
+        epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
         for epoch in epochs:
             # ======================== Training ================================
             train_start = time.time()
