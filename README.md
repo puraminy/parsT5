@@ -66,20 +66,13 @@ cache_folder="/content/drive/MyDrive/cache"
 #	--preprocessing_num_workers= "20" \
 ```
 
-If training was interrupted, it can be resumed from the last saved step. The model is saved for every 2500 steps (`--save_steps="2500"`). Also the first run needs to download datasets and do some pre-processing. This preprocessing can take some hours; however the results will be saved in `cache_folder` and can be used in further calls.
+## Notes!!
+
+If training was interrupted, it can be resumed from the last saved step. The model is saved for every 2500 steps (`--save_steps="2500"`). 
+
+Also the first run needs to download datasets and do some pre-processing. This preprocessing can take some hours; however the results will be saved in `cache_folder` and can be used in further calls. The preprocessed cache files are also accessible in the following link named "map_1" and "map_2", etc.
+
+[Preprocessed cache files](https://drive.google.com/drive/folders/1q4H1COIpdQoToKjTphQrWi3dwwdn5a5C?usp=sharing)
 
 
-You can set `--do_eval` if you only want to evaluate a checkpoint. Also to push the model to hugging face you can use the following settings:
-```
-	--push_to_hub="true" \
-	--hub_model_id="parsT5" \
-	--hub_token="Your API Token" \
-        --push_to_hub_organization="Your username or organization on HuggingFace" \
-```
-
-
-
-
-
-
-
+You can set `--do_eval` if you only want to evaluate a checkpoint. 
