@@ -483,7 +483,7 @@ if __name__ == "__main__":
 
     # Set seed before initializing model.
     set_seed(training_args.seed)
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Start my ver 6 %%%%%%%%%%%%%%%%%%%%")
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Start my ver 6 %%%%%%%%%%%%%%%%%%%%")
     USE_TPU = False
     if training_args.no_cuda:
         # Google Colab "TPU" runtimes are configured in "2VM mode", meaning that JAX
@@ -493,9 +493,9 @@ if __name__ == "__main__":
             import jax
             import jax.tools.colab_tpu
             jax.tools.colab_tpu.setup_tpu()
-            print('Connected to TPU.')
+            logger.info('Connected to TPU.')
         else:
-            print('No TPU detected. Can be changed under "Runtime/Change runtime type".')
+            logger.info('No TPU detected. Can be changed under "Runtime/Change runtime type".')
         tf.config.experimental.set_visible_devices([], "GPU")
         #logging.set_verbosity(logging.INFO)
         #TPU_WORKER = 'grpc://' + os.environ['TPU_NAME'] # for colab use TPU_NAME if in GCP.
@@ -547,7 +547,7 @@ if __name__ == "__main__":
         config = CONFIG_MAPPING[model_args.model_type]()
         logger.warning("You are instantiating a new config instance from scratch.")
 
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Load model from", model_args.model_name_or_path)
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Load model from %s", model_args.model_name_or_path)
     if model_args.model_name_or_path:
         model = FlaxT5ForConditionalGeneration.from_pretrained(
             model_args.model_name_or_path, config=config, 
@@ -639,19 +639,20 @@ if __name__ == "__main__":
     text_column_name = "text" if "text" in column_names else column_names[0]
 
     max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
+    logger.info("max_seq_length: %s", max_seq_length)
 
     # Otherwise, we tokenize every text, then concatenate them together before splitting them in smaller parts.
     # Since we make sure that all sequences are of the same length, no attention_mask is needed.
     def tokenize_function(examples):
         return tokenizer(examples[text_column_name], return_attention_mask=False)
     
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before MAP %%%%%%%%%%%%%%%%%%%%")
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before MAP %%%%%%%%%%%%%%%%%%%%")
     saved_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map1")
     cached_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_1.cached")
     cached_val_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_1_val.cached")
 
     if False: #Path(saved_dataset_path).exists():
-        print("loading from ", saved_dataset_path)
+        logger.info("loading from %s", saved_dataset_path)
         tokenized_datasets = load_from_disk(saved_dataset_path)
     else:
         tokenized_datasets = datasets.map(
@@ -663,7 +664,7 @@ if __name__ == "__main__":
             cache_file_names = {"train": cached_dataset_path, "validation": cached_val_dataset_path}
         )    
         # tokenized_datasets.save_to_disk(saved_dataset_path)
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% After MAP %%%%%%%%%%%%%%%%%%%%")
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% After MAP %%%%%%%%%%%%%%%%%%%%")
 
 
     # T5-like span masked language modeling will fuse consecutively masked tokens to a single sentinel token.
@@ -697,14 +698,13 @@ if __name__ == "__main__":
     #
     # To speed up this part, we use multiprocessing. See the documentation of the map method for more information:
     # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
-
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before MAP 2 %%%%%%%%%%%%%%%%%%%%")
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before MAP 2 %%%%%%%%%%%%%%%%%%%%")
     saved_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map2")    
     cached_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map2.cached")
     cached_val_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_2_val.cached")
     
     if False: #Path(saved_dataset_path).exists():
-        print("loading from ", saved_dataset_path)
+        logger.info("loading from %s", saved_dataset_path)
         tokenized_datasets = load_from_disk(saved_dataset_path)
     else:
         tokenized_datasets = tokenized_datasets.map(
@@ -716,7 +716,7 @@ if __name__ == "__main__":
         )
         #tokenized_datasets.save_to_disk(saved_dataset_path)
 
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% After MAP 2 %%%%%%%%%%%%%%%%%%%%")
+    logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% After MAP 2 %%%%%%%%%%%%%%%%%%%%")
 
     # Enable tensorboard only on the master node
     has_tensorboard = is_tensorboard_available()
@@ -772,7 +772,6 @@ if __name__ == "__main__":
     linear_decay_lr_schedule_fn = optax.join_schedules(
         schedules=[warmup_fn, decay_fn], boundaries=[training_args.warmup_steps]
     )
-
     # We use Optax's "masking" functionality to not apply weight decay
     # to bias and LayerNorm scale parameters. decay_mask_fn returns a
     # mask boolean with the same structure as the parameters.
@@ -810,7 +809,7 @@ if __name__ == "__main__":
     if training_args.resume_from_checkpoint:
         last_opt_state_file = os.path.join(training_args.resume_from_checkpoint, "opt_state.msgpack")
         if Path(last_opt_state_file).exists():
-           print("%%%%%%%%%%%% Restoring check point %%%%%%%%")
+           logger.info("%%%%%%%%%%%% Restoring check point %%%%%%%%")
            state, resume_step = restore_checkpoint(training_args.resume_from_checkpoint, state)
         
     # Define gradient update step fn
@@ -864,7 +863,7 @@ if __name__ == "__main__":
     # Replicate the train state on each device
     state = jax_utils.replicate(state)
     if training_args.push_to_hub:
-        print("%%%%%%%%%%%%%%%%%%%% Saving and Pushing to hub before training %%%")
+        logger.info("%%%%%%%%%%%%%%%%%%%% Saving and Pushing to hub before training %%%")
         save_checkpoint(
             model,
             training_args.output_dir,
@@ -876,7 +875,7 @@ if __name__ == "__main__":
     train_time = 0
     
     if training_args.do_eval:
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Evaluation %%%%%%%%%%%%%%%%%%%%%%%%%")
+        logger.info("%%%%%%%%%%%%%%%%%%%%%% Evaluation %%%%%%%%%%%%%%%%%%%%%%%%%")
         # ======================== Evaluating ==============================
         num_eval_samples = model_args.max_eval_steps if model_args.max_eval_steps else len(tokenized_datasets["validation"])
         eval_samples_idx = jnp.arange(num_eval_samples)
@@ -914,7 +913,7 @@ if __name__ == "__main__":
 
     #with strategy.scope():
     if not training.do_eval:
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
+        logger.info("%%%%%%%%%%%%%%%%%%%%%%% Before Training %%%%%%%%%%%%%%%%%%%%")
         epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
         for epoch in epochs:
             # ======================== Training ================================
