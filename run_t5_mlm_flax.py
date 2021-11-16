@@ -807,7 +807,7 @@ if __name__ == "__main__":
     # Setup train state
     
 
-    state = train_state.TrainState.create(apply_fn=model.__call__, tx=optimizer)
+    #state = train_state.TrainState.create(apply_fn=model.__call__, params=model.params, tx=optimizer)
     resume_step = 0
 
     if training_args.resume_from_checkpoint:
