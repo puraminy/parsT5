@@ -916,7 +916,7 @@ if __name__ == "__main__":
             
 
     #with strategy.scope():
-    if not training.do_eval:
+    if not training_args.do_eval:
         logger.info("################ Before Training ##############")
         epochs = tqdm(range(num_epochs), desc="Epoch ... ", position=0)
         for epoch in epochs:
