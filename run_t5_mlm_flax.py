@@ -226,7 +226,7 @@ def compute_input_and_target_lengths(inputs_length, noise_density, mean_noise_sp
 
 
 @flax.struct.dataclass
-class FlaxDataCollatorForT5MLM:
+class DataCollatorForT5MLM:
     """
     Data collator used for T5 span-masked language modeling.
     It is made sure that after masking the inputs are of length `data_args.max_seq_length` and targets are also of fixed length.
@@ -549,7 +549,7 @@ if __name__ == "__main__":
 
     logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Load model from %s", model_args.model_name_or_path)
     if model_args.model_name_or_path:
-        model = FlaxT5ForConditionalGeneration.from_pretrained(
+        model = T5ForConditionalGeneration.from_pretrained(
             model_args.model_name_or_path, config=config, 
             seed=training_args.seed, dtype=getattr(jnp, model_args.dtype)
         )
@@ -743,7 +743,7 @@ if __name__ == "__main__":
 
     # Data collator
     # This one will take care of randomly masking the tokens.
-    data_collator = FlaxDataCollatorForT5MLM(
+    data_collator = DataCollatorForT5MLM(
         tokenizer=tokenizer,
         noise_density=data_args.mlm_probability,
         mean_noise_span_length=data_args.mean_noise_span_length,
