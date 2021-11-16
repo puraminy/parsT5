@@ -588,7 +588,7 @@ if __name__ == "__main__":
     else:
         data_files = {}
         ds_name = Path(data_args.train_file).stem
-        Path(os.path.join(data_args.cache_dir, ds_name)).mkdir(exist_ok=True, parents=True)
+        Path(os.path.join(model_args.cache_dir, ds_name)).mkdir(exist_ok=True, parents=True)
         if data_args.train_file is not None:
             data_files["train"] = data_args.train_file
         if data_args.validation_file is not None:
