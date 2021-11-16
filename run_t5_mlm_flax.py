@@ -549,10 +549,10 @@ if __name__ == "__main__":
 
     logger.info("#################### Load model from %s", model_args.model_name_or_path)
     if model_args.model_name_or_path:
-        model = T5ForConditionalGeneration.from_pretrained(
+        model = FlaxT5ForConditionalGeneration.from_pretrained(
             model_args.model_name_or_path, 
-            #config=config, 
-            #seed=training_args.seed, # dtype=getattr(jnp, model_args.dtype)
+            config=config, 
+            seed=training_args.seed, dtype=getattr(jnp, model_args.dtype)
         )
     else:
         model = FlaxT5ForConditionalGeneration(config, seed=training_args.seed, dtype=getattr(jnp, model_args.dtype))
@@ -807,7 +807,7 @@ if __name__ == "__main__":
     # Setup train state
     
 
-    #state = train_state.TrainState.create(apply_fn=model.__call__, params=model.params, tx=optimizer)
+    state = train_state.TrainState.create(apply_fn=model.__call__, params=model.params, tx=optimizer)
     resume_step = 0
 
     if training_args.resume_from_checkpoint:
