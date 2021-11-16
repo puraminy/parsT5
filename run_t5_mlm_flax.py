@@ -566,6 +566,7 @@ if __name__ == "__main__":
     # For CSV/JSON files, this script will use the column called 'text' or the first column if no column called
     # 'text' is found. You can easily tweak this behavior (see below).
     if data_args.dataset_name is not None:
+        ds_name = data_args.dataset_name
         # Downloading and loading a dataset from the hub.
         datasets = load_dataset(data_args.dataset_name, 
                                 data_args.dataset_config_name, 
@@ -586,6 +587,7 @@ if __name__ == "__main__":
             )
     else:
         data_files = {}
+        ds_name = Path(data_args.train_file).stem
         if data_args.train_file is not None:
             data_files["train"] = data_args.train_file
         if data_args.validation_file is not None:
@@ -648,11 +650,11 @@ if __name__ == "__main__":
         return tokenizer(examples[text_column_name], return_attention_mask=False)
     
     logger.info("###################### Before MAP ##############")
-    saved_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map1")
-    cached_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_1.cached")
-    cached_val_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_1_val.cached")
+    saved_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map1")
+    cached_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map_1.cached")
+    cached_val_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map_1_val.cached")
 
-    if False: #Path(saved_dataset_path).exists():
+    if Path(saved_dataset_path).exists():
         logger.info("loading from %s", saved_dataset_path)
         tokenized_datasets = load_from_disk(saved_dataset_path)
     else:
@@ -700,9 +702,9 @@ if __name__ == "__main__":
     # To speed up this part, we use multiprocessing. See the documentation of the map method for more information:
     # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
     logger.info("###################### Before MAP 2 ##############")
-    saved_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map2")    
-    cached_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map2.cached")
-    cached_val_dataset_path = os.path.join(model_args.cache_dir,data_args.dataset_name, "map_2_val.cached")
+    saved_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map2")    
+    cached_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map2.cached")
+    cached_val_dataset_path = os.path.join(model_args.cache_dir,ds_name, "map_2_val.cached")
     
     if False: #Path(saved_dataset_path).exists():
         logger.info("loading from %s", saved_dataset_path)
