@@ -9,7 +9,7 @@ https://huggingface.co/Ahmad/parsT5-base/
 
 # Further training
 
-The model already was trained for one epoch (725000 steps) on 35 Gig Persian data of OSCUR corpus. However, the last checkpoint can be cloned and the training can be resumed for more steps or on a new corpus. The last checkpoint is husted at:
+The model already was trained for one epoch (725000 steps) on 35 Gig Persian data of OSCUR corpus. However, the last checkpoint can be cloned and the training can be resumed for more steps or on a new corpus. The last checkpoint is hosted at:
 
 https://huggingface.co/Ahmad/parsT5/
 
