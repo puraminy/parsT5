@@ -37,8 +37,12 @@ git clone https://huggingface.co/Ahmad/parsT5
 You need to have installed [Git LFS](https://git-lfs.github.com/)
 
 ## Run training script
+The training script in this repository is based on the huggingface flex example:
 
-Then you can run the training scripts like the following script. This example is for calling the script in a Jupyter Notebook, however the code is the same for command prompt just use `export` to set folder variables:
+
+https://github.com/huggingface/transformers/tree/master/examples/flax/language-modeling
+
+You can run the training scripts like the following script. This example is for calling the script in a Jupyter Notebook, however the code is the same for command prompt just use `export` to set folder variables:
 ```
 model_folder="/content/drive/MyDrive/parsT5"
 cache_folder="/content/drive/MyDrive/cache"
