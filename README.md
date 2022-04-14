@@ -60,6 +60,7 @@ cache_folder="/content/drive/MyDrive/cache"
 	--max_seq_length="256" \
 	--per_device_train_batch_size="32" \
 	--per_device_eval_batch_size="32" \
+	--eval_step="10000" \
 	--adafactor \
 	--max_eval_steps="12000" \
 	--learning_rate="0.005" \
@@ -67,7 +68,7 @@ cache_folder="/content/drive/MyDrive/cache"
 	--warmup_steps="2000" \
 	--logging_steps="500" \
 	--save_steps="2500" \
-        --resume_from_checkpoint=$model_folder
+#        --resume_from_checkpoint=$model_folder
 #	--do_eval \
 #	--preprocessing_num_workers= "20" \
 ```
