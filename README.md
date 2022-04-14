@@ -60,7 +60,7 @@ cache_folder="/content/drive/MyDrive/cache"
 	--max_seq_length="256" \
 	--per_device_train_batch_size="32" \
 	--per_device_eval_batch_size="32" \
-	--eval_step="10000" \
+	--eval_steps="10000" \
 	--adafactor \
 	--max_eval_steps="12000" \
 	--learning_rate="0.005" \
